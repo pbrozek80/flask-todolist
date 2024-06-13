@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% from "bootstrap5/form.html" import render_form %}
+
+{% block title %}TD List – View list{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+<h1 class="display-1">List viewer</h1>
+  <br />
+  {% if list %}
+  <h3>{{list.name}}</h3>
+  <h4>{{list.description}}</h4>
+  <h5><i class="bi bi-calendar"></i> {{list.deadline}}</h5>
+<!-- Listing list parameters -->
+  <!-- Progress bar-->
+<div class="progress" role="progressbar" aria-label="Overall progress" aria-valuenow="{{list.progress}}"
+     aria-valuemin="0" aria-valuemax="100">
+  <div class="progress-bar w-{{list.progress}}">{{list.progress}}%</div>
+</div>
+  <div>Status: {{list.status}}</div>
+<!-- Table of items in our list -->
+    {% else %}
+  <div class="alert alert-warning" role="alert" style="max-width: 18rem;">No proper list #!</div>
+  {% endif %}
+            <!-- eolists-->
+    {% if elements %}
+  <table class="table">
+  <thead>
+    <tr>
+      <th scope="col"><i class="bi bi-vector-pen"></i></th>
+      <th scope="col"><i class="bi bi-trash3"></i></th>
+      <th scope="col">Name</th>
+      <th scope="col">Done</th>
+      <th scope="col">Priority</th>
+      <th scope="col">Progress</th>
+      <th scope="col">Label</th>
+    </tr>
+  </thead>
+  <tbody class="table-group-divider">
+
+  {% for element in elements %}
+    <tr>
+      <th scope="col">
+        <a href="{{url_for('edit_list', list_id=list_id, element_id=element.id)}}">
+          <i class="bi bi-vector-pen"></i></a></th>
+      <td><a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{element.id}}">
+          <i class="bi bi-trash3"></i></a></td>
+      <td>{{element.name}}</td>
+      {% if element.done == True %}
+      <td><i class="bi bi-check-lg"></i></td>
+      {% else %}
+      <td><i class="bi bi-x-lg"></i></td>
+      {% endif %}
+      <td><i class="bi bi-{{element.priority}}-circle-fill"></i></td>
+      <td><div class="progress" role="progressbar" aria-label="Item progress" aria-valuenow="{{element.progress}}"
+     aria-valuemin="0" aria-valuemax="100"><div class="progress-bar">{{element.progress}}%</div></div></td>
+      <td>(to be added later)</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+
+  {% else %}
+  <div class="alert alert-warning" role="alert" style="max-width: 18rem;">List empty!</div>
+  {% endif %}
+
+
+
+
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNewElementModal">
+Add an element
+</button>
+
+
+
+
+
+  <!-- static Modal (Add Elements)-->
+<div class="modal fade modal-md" id="addNewElementModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">{{heading_text}}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cancel"></button>
+      </div>
+      <div class="modal-body">
+        {{ render_form(form) }}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+<!--        <button type="button" class="btn btn-primary">Save</button>-->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  {% for element in elements %}
+<!-- Modal -->
+<div class="modal fade" id="deleteModal{{element.id}}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="deleteModalLabel">Confirmation</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Do you really want to delete <mark>{{element.name}}</mark> element?
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary" href="{{url_for('delete_element', list_id=list_id, element_id=element.id)}}" role="button">Yes</a>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  {% endfor %}
+
+
+  </div>
+
+{% endblock %}
+
+

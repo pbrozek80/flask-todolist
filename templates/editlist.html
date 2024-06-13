@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% from "bootstrap5/form.html" import render_form %}
+
+{% block title %}TD List – Edit list element{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+<h4 class="display-4">List element editor</h4>
+  <br />
+        {{ render_form(editform) }}
+    <a class="btn btn-primary" href="javascript:history.back()" role="button">Cancel</a>
+  </div>
+
+{% endblock %}
+
+
